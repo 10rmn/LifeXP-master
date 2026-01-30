@@ -1,0 +1,41 @@
+services:
+  # Backend API Server (connects to Supabase)
+  - type: web
+    name: lifexp-backend
+    env: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      # Supabase credentials
+      - key: SUPABASE_URL
+        value: https://sadpmhteicfepomaohiq.supabase.co
+      - key: SUPABASE_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZHBtaHRlaWNmZXBvbWFvaGlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNjczOTgsImV4cCI6MjA4MDg0MzM5OH0.JZaOSIsHDarOZx1vxNI1qwbY0oYop235CYpInOwDYuQ
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        value: https://lifexp-tnxk.onrender.com
+        
+  # Frontend Static Site
+  - type: web
+    name: lifexp-frontend
+    env: static
+    plan: free
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: ./client/dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://lifexp-tnxk.onrender.com

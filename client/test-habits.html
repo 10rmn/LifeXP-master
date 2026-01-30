@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Habits</title>
+</head>
+<body>
+    <h1>Test Habits API</h1>
+    <button onclick="testGetHabits()">Get Habits for User 2</button>
+    <button onclick="testCreateHabit()">Create Habit for User 2</button>
+    <div id="results"></div>
+
+    <script>
+        async function testGetHabits() {
+            try {
+                const response = await fetch('http://localhost:4000/api/habits/user/2');
+                const data = await response.json();
+                document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                console.log('Habits:', data);
+            } catch (error) {
+                document.getElementById('results').innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+                console.error('Error:', error);
+            }
+        }
+
+        async function testCreateHabit() {
+            try {
+                const response = await fetch('http://localhost:4000/api/habits/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: 2,
+                        name: 'Test Habit',
+                        frequency: 'daily',
+                        category: 'easy'
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                console.log('Created habit:', data);
+            } catch (error) {
+                document.getElementById('results').innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
